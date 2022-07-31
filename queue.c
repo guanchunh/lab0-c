@@ -214,10 +214,10 @@ void q_reverse(struct list_head *head)
     if (!head)
         return;
     
-    struct list_head *prev = head->prev; *curr = head, *next = NULL;
+    struct list_head *prev = head->prev, *curr = head, *next = NULL;
 
-    while (next != head)
-    {
+    while (next != head){
+
         next = curr->next;
         curr->next = prev;
         curr->prev = next;
