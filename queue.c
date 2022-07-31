@@ -228,5 +228,61 @@ void q_reverse(struct list_head *head)
     
 }
 
+static struct list_head *mergelist(struct list_head *list1, struct list_head *list2)
+{
+    struct list_head *res = NULL;
+    struct list_head **indirect = &res;
+    for (struct list_head **node = NULL; list1 && list2; *node = (*node)->next)
+    {
+        element_t *list1_entry = list_entry(list1, element_t, list);
+        element_t *lisr2_entry = list_entry(list2, element_t, list);
+        node = strcmp(list1_entry->value, list2_entry->value) < 0 ? &list1 : &list2;
+
+        *indirect = *node;
+        indirect = &(*indirect)->next; 
+    }
+    *indirect = (struct list_head *) ((u_int64_t) list1 | (u_int64_t) list2);
+    return res;
+}
+
+static struct list_head *mergesort(struct list_head *head)
+{
+    if (!head || !head->next)
+        return head;
+
+    struct list_head *rabbit = head, *turtle = head;
+    while (rabbit && rabbit->next){
+        rabbit = rabbit->next->next;
+        turtle = turtle->next;
+    } 
+
+    struct list_head *mid = turtle;
+    turtle->prev->next = NULL;
+
+    struct list_head *left = mergesort(head);
+    struct list_head *right = mergesort(mid);
+    
+    return mergelist(left,right); 
+    
+}
 /* Sort elements of queue in ascending order */
-void q_sort(struct list_head *head) {}
+void q_sort(struct list_head *head) 
+{
+    if (!head || list_empty(head))
+        return ;
+
+    head->prev->next = NULL;
+    head->next = mergesort(head->next);
+
+    struct list_head *curr = head, *next = head->next;
+
+    while (next){
+        next->prev = curr;
+        curr = next;
+        next = next->next;
+    }
+
+    curr->next = head;
+    head->prev = curr;
+    
+}
