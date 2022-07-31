@@ -235,7 +235,7 @@ static struct list_head *mergelist(struct list_head *list1, struct list_head *li
     for (struct list_head **node = NULL; list1 && list2; *node = (*node)->next)
     {
         element_t *list1_entry = list_entry(list1, element_t, list);
-        element_t *lisr2_entry = list_entry(list2, element_t, list);
+        element_t *list2_entry = list_entry(list2, element_t, list);
         node = strcmp(list1_entry->value, list2_entry->value) < 0 ? &list1 : &list2;
 
         *indirect = *node;
